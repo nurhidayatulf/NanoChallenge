@@ -188,28 +188,6 @@ struct AddItemView: View {
                         })
                     }
                     
-                    
-                    //                Picker("Choose Option", selection: Binding<SelectionOption>(
-                    //                    set: { newValue in
-                    //                        if newValue == .photo {
-                    //                            showImageSourceActionSheet = true
-                    //                        } else {
-                    //                            itemImage = nil
-                    //                        }
-                    //                    }
-                    //                )) {
-                    //                    Text("Choose Photo").tag(SelectionOption.photo)
-                    //                    Text("Choose Color").tag(SelectionOption.color)
-                    //                }
-                    //                .pickerStyle(SegmentedPickerStyle())
-                    //                .padding()
-                    
-                    //                    if !isPhotoSelected {
-                    //                        ColorPicker("Pick a Color", selection:$itemColor)
-                    //                            .frame(width: 330)
-                    //                            .foregroundColor(.black)
-                    //                    }
-                    
                     if isPhotoSelected {
                         if itemImage == nil {
                             Button(action: {

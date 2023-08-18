@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import MC2
+//@testable import MC2
 
 final class MC2Tests: XCTestCase {
 

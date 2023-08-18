@@ -9,7 +9,6 @@ import SwiftUI
 
 struct PlusButton: View {
     var action: () -> Void
-    
     var body: some View {
         VStack (alignment: .leading) {
             Spacer()
@@ -30,16 +29,6 @@ struct PlusButton: View {
             .onTapGesture {
                 action()
             }
-//            Image(systemName: "plus.circle.fill")
-//                .resizable()
-//                .scaledToFit()
-//                .frame(width: 60, height: 60)
-//                .shadow(radius: 4, x: 0, y:2)
-//                .foregroundColor(Color("Button"))
-//                .offset(x: 140, y: -40)
-//                .onTapGesture {
-//                    action()
-//                }
         }.ignoresSafeArea()
     }
 }

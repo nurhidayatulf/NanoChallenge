@@ -11,15 +11,12 @@ import CoreLocation
 @main
 struct MC2App: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
     @State private var selectedCoordinate: CLLocationCoordinate2D? = nil
     
     var body: some Scene {
         WindowGroup {
-            
             //SummaryView(itemsCount: .constant(0), itemsCount2: .constant(0), text: .constant("")).preferredColorScheme(.light)
             MainView(searchQuery: .constant("")).preferredColorScheme(.light)
-            
             //BottomSheetView()
             //ContentView()
             //MapView(selectedCoordinate: $selectedCoordinate).preferredColorScheme(.light)

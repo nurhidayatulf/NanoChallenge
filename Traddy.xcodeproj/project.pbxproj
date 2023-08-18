@@ -24,7 +24,6 @@
 		7FE485AB2A232FB000C1A27C /* MC2UITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE485AA2A232FB000C1A27C /* MC2UITestsLaunchTests.swift */; };
 		7FE485B82A239AE900C1A27C /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE485B72A239AE900C1A27C /* SummaryView.swift */; };
 		7FE485BB2A25D67E00C1A27C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE485BA2A25D67E00C1A27C /* AppDelegate.swift */; };
-		7FE485F92A2B513F00C1A27C /* WelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE485F82A2B513F00C1A27C /* WelcomeScreen.swift */; };
 		7FE485FC2A2B660800C1A27C /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE485FB2A2B660800C1A27C /* MapView.swift */; };
 		7FE485FE2A2D9BA600C1A27C /* MyLuggage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE485FD2A2D9BA600C1A27C /* MyLuggage.swift */; };
 /* End PBXBuildFile section */
@@ -68,7 +67,6 @@
 		7FE485B72A239AE900C1A27C /* SummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryView.swift; sourceTree = "<group>"; };
 		7FE485B92A23B16000C1A27C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7FE485BA2A25D67E00C1A27C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		7FE485F82A2B513F00C1A27C /* WelcomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreen.swift; sourceTree = "<group>"; };
 		7FE485FB2A2B660800C1A27C /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		7FE485FD2A2D9BA600C1A27C /* MyLuggage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLuggage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -120,7 +118,6 @@
 			isa = PBXGroup;
 			children = (
 				7FE485B92A23B16000C1A27C /* Info.plist */,
-				7FE4858D2A232FAE00C1A27C /* MC2App.swift */,
 				7FE4858F2A232FAE00C1A27C /* OnMyBody.swift */,
 				7FE485FD2A2D9BA600C1A27C /* MyLuggage.swift */,
 				7FE485B72A239AE900C1A27C /* SummaryView.swift */,
@@ -162,6 +159,7 @@
 		7FE4858C2A232FAE00C1A27C /* MC2 */ = {
 			isa = PBXGroup;
 			children = (
+				E96B132D2A8F6DF300539841 /* App */,
 				7F1041852A350123006755D2 /* View */,
 				7F1041882A35017B006755D2 /* Component */,
 				7F1041842A350102006755D2 /* Helper */,
@@ -203,9 +201,16 @@
 			children = (
 				7FE485FB2A2B660800C1A27C /* MapView.swift */,
 				7FE485BA2A25D67E00C1A27C /* AppDelegate.swift */,
-				7FE485F82A2B513F00C1A27C /* WelcomeScreen.swift */,
 			);
 			path = Maps;
+			sourceTree = "<group>";
+		};
+		E96B132D2A8F6DF300539841 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				7FE4858D2A232FAE00C1A27C /* MC2App.swift */,
+			);
+			path = App;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -343,7 +348,6 @@
 				7F10416F2A34F2AA006755D2 /* MainView.swift in Sources */,
 				7FE485FC2A2B660800C1A27C /* MapView.swift in Sources */,
 				7FE485902A232FAE00C1A27C /* OnMyBody.swift in Sources */,
-				7FE485F92A2B513F00C1A27C /* WelcomeScreen.swift in Sources */,
 				7F10419E2A350D74006755D2 /* RoundedButton.swift in Sources */,
 				7F1041A22A371D90006755D2 /* CardView.swift in Sources */,
 				7FE485FE2A2D9BA600C1A27C /* MyLuggage.swift in Sources */,
@@ -511,7 +515,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"MC2/Preview Content\"";
-				DEVELOPMENT_TEAM = ZZ79V9645H;
+				DEVELOPMENT_TEAM = GNTKTFQL7U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MC2/Info.plist;
@@ -528,7 +532,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tegar;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tes.nur;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -544,7 +548,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"MC2/Preview Content\"";
-				DEVELOPMENT_TEAM = ZZ79V9645H;
+				DEVELOPMENT_TEAM = GNTKTFQL7U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MC2/Info.plist;
@@ -561,7 +565,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tegar;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tes.nur;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -576,11 +580,11 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZZ79V9645H;
+				DEVELOPMENT_TEAM = GNTKTFQL7U;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tes.MC2Tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tes.nur;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -596,11 +600,11 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZZ79V9645H;
+				DEVELOPMENT_TEAM = GNTKTFQL7U;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tes.MC2Tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tes.nur;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -615,10 +619,10 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZZ79V9645H;
+				DEVELOPMENT_TEAM = GNTKTFQL7U;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tes.MC2UITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tes.nur;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -633,10 +637,10 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZZ79V9645H;
+				DEVELOPMENT_TEAM = GNTKTFQL7U;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.tes.MC2UITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tes.nur;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
