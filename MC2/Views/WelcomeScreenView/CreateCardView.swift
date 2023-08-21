@@ -10,15 +10,9 @@ import MapKit
 import CoreLocation
 
 struct CreateCardView: View {
+    @StateObject private var viewModelCreateCard = CreateCardViewModel()
     @Binding var isCreatingCard: Bool
     @Binding var cards: [Card]
-    @State var text: String = ""
-    @State var searchQuery: String = ""
-    @State private var searchResults: [MKMapItem] = []
-    @State private var selectedLocation: CLLocationCoordinate2D?
-    @State private var date = Date()
-    @State private var useCurrentLocation = false
-    @ObservedObject private var locationManagerDelegate = LocationManagerDelegate()
     
     var body: some View {
         NavigationView {
@@ -29,7 +23,7 @@ struct CreateCardView: View {
                         .font(.headline)
                         .fontWeight(.semibold)
                     
-                    TextField("Ex: Trip Malang", text: $text)
+                    TextField("Ex: Trip Malang", text: $viewModelCreateCard.text)
                         .foregroundColor(.black)
                         .background(Color("Field"))
                         .padding(.horizontal)
@@ -39,8 +33,8 @@ struct CreateCardView: View {
                         .cornerRadius(15)
                         .padding(.top, -10)
                     
-                    if useCurrentLocation {
-                        Map(coordinateRegion: .constant(getCoordinateRegion()), showsUserLocation: true)
+                    if viewModelCreateCard.useCurrentLocation {
+                        Map(coordinateRegion: .constant(viewModelCreateCard.getCoordinateRegion()), showsUserLocation: true)
                             .frame(height: 200)
                             .cornerRadius(10)
                     } else {
@@ -49,12 +43,12 @@ struct CreateCardView: View {
                             .font(.headline)
                             .fontWeight(.semibold)
                         
-                        TextField("Location", text: $searchQuery) { isEditing in
+                        TextField("Location", text: $viewModelCreateCard.searchQuery) { isEditing in
                             if isEditing {
-                                searchResults = []
+                                viewModelCreateCard.searchResults = []
                             }
                         } onCommit: {
-                            searchLocations()
+                            viewModelCreateCard.searchLocations()
                         }
                         .foregroundColor(.black)
                         .background(Color("Field"))
@@ -69,9 +63,9 @@ struct CreateCardView: View {
                     HStack {
                         Spacer()
                         Button(action: {
-                            useCurrentLocation.toggle()
+                            viewModelCreateCard.useCurrentLocation.toggle()
                         }) {
-                            Text(useCurrentLocation ? "Enter a location" : "Use my current location")
+                            Text(viewModelCreateCard.useCurrentLocation ? "Enter a location" : "Use my current location")
                                 .font(.caption)
                                 .foregroundColor(Color("Text"))
                         }
@@ -79,9 +73,9 @@ struct CreateCardView: View {
                     .padding(.top, -10)
                     
                     ScrollView(.vertical) {
-                        ForEach(searchResults, id: \.self) { item in
+                        ForEach(viewModelCreateCard.searchResults, id: \.self) { item in
                             Button(action: {
-                                selectLocation(item.placemark)
+                                viewModelCreateCard.selectLocation(item.placemark)
                             }) {
                                 ZStack(alignment: .leading) {
                                     RoundedRectangle(cornerRadius: 10)
@@ -89,7 +83,7 @@ struct CreateCardView: View {
                                     VStack(alignment: .leading) {
                                         Text(item.name ?? "")
                                             .font(.headline)
-                                        Text(formatAddress(item.placemark))
+                                        Text(viewModelCreateCard.formatAddress(item.placemark))
                                             .font(.subheadline)
                                     }
                                     .padding()
@@ -121,54 +115,24 @@ struct CreateCardView: View {
             }
         }
         .onAppear {
-            locationManagerDelegate.startUpdatingLocation()
+            viewModelCreateCard.locationManagerDelegate.startUpdatingLocation()
         }
         .onDisappear {
-            locationManagerDelegate.stopUpdatingLocation()
+            viewModelCreateCard.locationManagerDelegate.stopUpdatingLocation()
         }
-    }
-    
-    func searchLocations() {
-        let request = MKLocalSearch.Request()
-        request.naturalLanguageQuery = searchQuery
-        
-        let search = MKLocalSearch(request: request)
-        search.start { response, error in
-            if let response = response {
-                searchResults = response.mapItems
-            }
-        }
-    }
-    
-    func selectLocation(_ placemark: MKPlacemark) {
-        selectedLocation = placemark.coordinate
-        searchQuery = formatAddress(placemark)
-    }
-    
-    func formatAddress(_ placemark: MKPlacemark) -> String {
-        let addressComponents = [placemark.subThoroughfare, placemark.thoroughfare, placemark.locality, placemark.administrativeArea, placemark.postalCode, placemark.country]
-            .compactMap { $0 }
-        return addressComponents.joined(separator: ", ")
     }
     
     func createCard() {
-        let newCard = Card(text: text, location: selectedLocation, imageName: getImageName())
+        let newCard = Card(text: viewModelCreateCard.text, location: viewModelCreateCard.selectedLocation, imageName: getImageName())
         cards.append(newCard)
         isCreatingCard = false
     }
     
-    private func getImageName() -> String? {
+    func getImageName() -> String? {
         let imageNames = ["pic3", "pic4", "pic2"]
         
         let index = cards.count % imageNames.count
         return imageNames[index]
-    }
-    
-    private func getCoordinateRegion() -> MKCoordinateRegion {
-        if let location = locationManagerDelegate.location {
-            return MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-        }
-        return MKCoordinateRegion()
     }
 }
 

@@ -1,13 +1,8 @@
 import SwiftUI
 
 struct OnMyBodyView: View {
-    @AppStorage("items") var itemsData: Data = Data()
-    @State private var isShowingAddItemView = false
-    @State private var newItemName = ""
-    @State private var newItemColor = Color.gray
-    @State private var newItemImage: UIImage? = nil
-    @Binding var itemsCount: Int
-    @State private var items: [Item] = []
+    @StateObject private var viewModelOnMyBody = OnMyBodyViewModel()
+    @Binding var itemsCountOnMyBody: Int
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
@@ -31,98 +26,52 @@ struct OnMyBodyView: View {
                     }.padding([.top, .leading], 20)
                     ScrollView {
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
-                            ForEach(items, id: \.id) { item in
-                                RectangleView(item: item, items: $items)
+                            ForEach(viewModelOnMyBody.items, id: \.id) { item in
+                                RectangleViewOnMyBody(item: item, items: $viewModelOnMyBody.items)
                             }
                         }
                         .padding()
                     }
                 }
                 .onAppear {
-                    loadItems()
-                    updateItemCount()
+                    viewModelOnMyBody.loadItems()
+                    viewModelOnMyBody.updateItemCount()
                 }
                 .onDisappear {
-                    saveItems()
+                    viewModelOnMyBody.saveItems()
                 }
                 PlusButton(action: {
-                    isShowingAddItemView = true
+                    viewModelOnMyBody.isShowingAddItemView = true
                 })
-                .sheet(isPresented: $isShowingAddItemView) {
-                    AddItemView(
-                        isShowing: $isShowingAddItemView,
-                        itemName: $newItemName,
-                        itemColor: $newItemColor,
-                        itemImage: $newItemImage,
-                        items: $items,
-                        itemsCount: $itemsCount,
+                .sheet(isPresented: $viewModelOnMyBody.isShowingAddItemView) {
+                    AddItemOnMyBodyView(
+                        isShowing: $viewModelOnMyBody.isShowingAddItemView,
+                        itemName: $viewModelOnMyBody.newItemName,
+                        itemColor: $viewModelOnMyBody.newItemColor,
+                        itemImage: $viewModelOnMyBody.newItemImage,
+                        items: $viewModelOnMyBody.items,
+                        itemsCount: $itemsCountOnMyBody,
                         completion: { itemName in
-                            newItemName = itemName
-                            updateItemCount()
+                            viewModelOnMyBody.newItemName = itemName
+                            viewModelOnMyBody.updateItemCount()
                         }
                     )
                 }
             }
             .ignoresSafeArea()
             .background(.white)
-            
-//            .toolbar {
-//                ToolbarItem(placement: .navigationBarLeading){
-//                    Button{
-//                        dismiss()
-//                    }label:{
-//                        Image(systemName: "chevron.backward.circle.fill")
-//                            .foregroundColor(Color(.white))
-//                            .shadow(radius: 4, x: 0, y:2)
-//                    }
-//                }
-//            }
         }
-    }
-    
-    func saveItems() {
-        do {
-            let encodedData = try JSONEncoder().encode(items)
-            itemsData = encodedData
-            updateItemCount()
-        } catch {
-            print("Error saving items: \(error.localizedDescription)")
-        }
-    }
-    
-    func loadItems() {
-        do {
-            let decodedItems = try JSONDecoder().decode([Item].self, from: itemsData)
-            items = decodedItems
-            updateItemCount()
-        } catch {
-            print("Error loading items: \(error.localizedDescription)")
-        }
-    }
-    
-    func updateItemCount() {
-        itemsCount = items.count
     }
 }
-
-struct AddItemView: View {
+struct AddItemOnMyBodyView: View {
+    @StateObject private var viewModelAddItem = addItemViewModel()
     @Binding var isShowing: Bool
     @Binding var itemName: String
     @Binding var itemColor: Color
     @Binding var itemImage: UIImage?
-    @Binding var items: [Item]
+    @Binding var items: [OnMyBodyItem]
     @Binding var itemsCount: Int
-    
-    
-    //untuk reset nama item
-    var completion: (String) -> Void
-    @State private var itemNameInput: String = "Item's Name"
-    @State private var showImagePicker = false
-    @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
-    @State private var showImageSourceActionSheet = false
-    
-    @State var toggleIsOn: Bool = true
-    
+    @State var completion: (String) -> Void
     
     var body: some View {
         NavigationView {
@@ -132,14 +81,14 @@ struct AddItemView: View {
                         RoundedRectangle(cornerRadius: 15)
                             .frame(width: 330, height: 230)
                             .foregroundColor(itemColor)
-                        if toggleIsOn == true {
+                        if viewModelAddItem.toggleIsOn == true {
                             Image(systemName: "photo.fill.on.rectangle.fill")
                                 .resizable()
                                 .foregroundColor(.white)
                                 .scaledToFit()
                                 .frame(width: 80)
-                            if isPhotoSelected {
-                                if let image = itemImage {
+                            if viewModelAddItem.isPhotoSelected {
+                                if let image = viewModelAddItem.itemImage {
                                     Image(uiImage: image)
                                         .resizable()
                                         .scaledToFit()
@@ -156,7 +105,7 @@ struct AddItemView: View {
                     Text("Item Name")
                         .foregroundColor(.black)
                         .padding(.bottom, -10)
-                    TextField(/*@START_MENU_TOKEN@*/"Placeholder"/*@END_MENU_TOKEN@*/, text: $itemNameInput)
+                    TextField(/*@START_MENU_TOKEN@*/"Placeholder"/*@END_MENU_TOKEN@*/, text: $viewModelAddItem.itemNameInput)
                         .foregroundColor(.black)
                         .background(Color("Field"))
                         .padding(.horizontal)
@@ -165,20 +114,20 @@ struct AddItemView: View {
                         .background(Color("Field"))
                         .cornerRadius(10)
                     
-                    Toggle(isOn: $toggleIsOn,
+                    Toggle(isOn: $viewModelAddItem.toggleIsOn,
                            label: {
                         Text("Use Picture")
                             .foregroundColor(.black)
                     }).toggleStyle(SwitchToggleStyle(tint: .green))
                         .frame(width: 330)
-                    if toggleIsOn == false{
+                    if viewModelAddItem.toggleIsOn == false{
                         ColorPicker("Pick a Color", selection:$itemColor)
                             .frame(width: 330)
                             .foregroundColor(.black)
                     }else{
                         Button(action: {
-                            showImageSourceActionSheet = true
-                            toggleIsOn = true
+                            viewModelAddItem.showImageSourceActionSheet = true
+                            viewModelAddItem.toggleIsOn = true
                         },label :{
                             HStack{
                                 Image(systemName: "photo.fill.on.rectangle.fill")
@@ -188,10 +137,10 @@ struct AddItemView: View {
                         })
                     }
                     
-                    if isPhotoSelected {
-                        if itemImage == nil {
+                    if viewModelAddItem.isPhotoSelected {
+                        if viewModelAddItem.itemImage == nil {
                             Button(action: {
-                                showImageSourceActionSheet = true
+                                viewModelAddItem.showImageSourceActionSheet = true
                             }) {
                                 Text("Add Picture")
                                     .foregroundColor(.white)
@@ -205,42 +154,41 @@ struct AddItemView: View {
                     
                     Spacer()
                     RoundedButton(title: "Add Item", action: {
-                        let newItem: Item
-                        if isPhotoSelected {
-                            newItem = Item(id: UUID(), name: itemNameInput, color: .clear, image: itemImage?.fixOrientation())
+                        let newItem: OnMyBodyItem
+                        if viewModelAddItem.isPhotoSelected {
+                            newItem = OnMyBodyItem(id: UUID(), name: viewModelAddItem.itemNameInput, color: .clear, image: viewModelAddItem.itemImage?.fixOrientation())
                         } else {
-                            newItem = Item(id: UUID(), name: itemNameInput, color: itemColor, image: nil)
+                            newItem = OnMyBodyItem(id: UUID(), name: viewModelAddItem.itemNameInput, color: itemColor, image: nil)
                         }
                         items.append(newItem)
-                        completion(itemName)
-                        itemNameInput = "" // Reset itemNameInput to empty string
+                        viewModelAddItem.itemNameInput = "" // Reset itemNameInput to empty string
                         
                         isShowing = false
-                        itemImage = nil // Reset itemImage to nil
+                        viewModelAddItem.itemImage = nil // Reset itemImage to nil
                     })
                 }
                 .frame(maxWidth: .infinity)
                 .background(Color(.white))
-                .navigationTitle(itemNameInput)
+                .navigationTitle($viewModelAddItem.itemNameInput)
                 .navigationBarTitleDisplayMode(.inline)
-                .actionSheet(isPresented: $showImageSourceActionSheet) {
+                .actionSheet(isPresented: $viewModelAddItem.showImageSourceActionSheet) {
                     ActionSheet(
                         title: Text("Choose Photo Source"),
                         buttons: [
                             .default(Text("Camera"), action: {
-                                showImagePicker = true
-                                sourceType = .camera
+                                viewModelAddItem.showImagePicker = true
+                                viewModelAddItem.sourceType = .camera
                             }),
                             .default(Text("Photo Library"), action: {
-                                showImagePicker = true
-                                sourceType = .photoLibrary
+                                viewModelAddItem.showImagePicker = true
+                                viewModelAddItem.sourceType = .photoLibrary
                             }),
                             .cancel()
                         ]
                     )
                 }
-                .sheet(isPresented: $showImagePicker) {
-                    ImagePicker(image: $itemImage, sourceType: $sourceType)
+                .sheet(isPresented: $viewModelAddItem.showImagePicker) {
+                    ImagePicker(image: $viewModelAddItem.itemImage, sourceType: $viewModelAddItem.sourceType)
                 }
                 //.navigationBarTitle("Tambah Item")
                 .navigationBarItems(trailing: Button(action: {
@@ -249,128 +197,14 @@ struct AddItemView: View {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundColor(Color("Button"))
                 })
-                    
-//                .offset(x: 0, y: 300)
             }
-            
-        }
-    }
-    
-    var isPhotoSelected: Bool {
-        return itemImage != nil
-    }
-    
-    enum SelectionOption {
-        case photo, color
-    }
-}
-
-extension UIImage {
-    func fixOrientation() -> UIImage {
-        if imageOrientation == .up {
-            return self
-        }
-
-        UIGraphicsBeginImageContextWithOptions(size, false, scale)
-        draw(in: CGRect(origin: .zero, size: size))
-        let normalizedImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-
-        return normalizedImage ?? self
-    }
-}
-
-struct Item: Identifiable, Codable {
-    var id: UUID
-    var name: String
-    var color: Color = Color("Text")
-    var imageData: Data?
-    
-    var image: UIImage? {
-        if let imageData = imageData {
-            return UIImage(data: imageData)
-        }
-        return nil
-    }
-    
-    init(id: UUID = UUID(), name: String, color: Color, image: UIImage?) {
-        self.id = id
-        self.name = name
-        self.color = color
-        self.imageData = image?.pngData()
-    }
-    
-    private enum CodingKeys: String, CodingKey {
-        case id, name, color, imageData
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(UUID.self, forKey: .id)
-        name = try container.decode(String.self, forKey: .name)
-        imageData = try container.decode(Data?.self, forKey: .imageData)
-        if let colorData = try container.decode(Data?.self, forKey: .color),
-           let unarchivedColor = try NSKeyedUnarchiver.unarchivedObject(ofClass: UIColor.self, from: colorData) {
-            color = Color(unarchivedColor)
-        } else {
-            color = Color.gray
-        }
-    }
-    
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(id, forKey: .id)
-        try container.encode(name, forKey: .name)
-        try container.encode(imageData, forKey: .imageData)
-        if let colorData = try? NSKeyedArchiver.archivedData(withRootObject: UIColor(color), requiringSecureCoding: false) {
-            try container.encode(colorData, forKey: .color)
         }
     }
 }
 
-struct ImagePicker: UIViewControllerRepresentable {
-    @Environment(\.presentationMode) var presentationMode
-    @Binding var image: UIImage?
-    @Binding var sourceType: UIImagePickerController.SourceType
-    
-    class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-        let parent: ImagePicker
-        
-        init(_ parent: ImagePicker) {
-            self.parent = parent
-        }
-        
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-            if let image = info[.originalImage] as? UIImage {
-                parent.image = image
-            }
-            parent.presentationMode.wrappedValue.dismiss()
-        }
-        
-        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            parent.presentationMode.wrappedValue.dismiss()
-        }
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
-        let picker = UIImagePickerController()
-        picker.delegate = context.coordinator
-        picker.sourceType = sourceType
-        return picker
-    }
-    
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: UIViewControllerRepresentableContext<ImagePicker>) {
-        // Empty implementation
-    }
-}
-
-struct RectangleView: View {
-    var item: Item
-    @Binding var items: [Item]
+struct RectangleViewOnMyBody: View {
+    var item: OnMyBodyItem
+    @Binding var items: [OnMyBodyItem]
     
     var body: some View {
         ZStack (alignment: .center){
@@ -424,7 +258,7 @@ struct RectangleView: View {
         .shadow(radius: 4, x:0 ,y: 2)
     }
     
-    func removeItem(_ item: Item) {
+    func removeItem(_ item: OnMyBodyItem) {
         items.removeAll { $0.id == item.id }
     }
 }

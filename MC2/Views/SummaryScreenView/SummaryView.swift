@@ -9,17 +9,11 @@ import SwiftUI
 import CoreLocation
 
 struct SummaryView: View {
-    @State var point: [String] = ["Loc1","Loc2","Loc3"]
+    @StateObject private var viewModelSummary = SummaryViewModel()
     @Environment(\.dismiss) var dismiss
     @Binding var itemsCount : Int
     @Binding var itemsCount2: Int
-    @State private var onMyBodyItemCount = 0
-    @State private var myLuggageItemCount = 0
-    @State private var MyLuggage = 0
-    @State private var selectedCoordinate: CLLocationCoordinate2D? = nil
-    @State private var isShowingMapView = false
     @Binding var text: String
-    
     
     var body: some View {
         NavigationStack {
@@ -35,22 +29,19 @@ struct SummaryView: View {
                             .opacity(0.85)
                             .shadow(radius: 4, x: 0, y: 2)
                         VStack {
-//                            Text("\(text)")
-//                                .font(.title3)
-//                                .fontWeight(.semibold)
                             Text("Summary")
                                 .font(.body)
                                 .fontWeight(.semibold)
                             
                         }.foregroundColor(Color("Text"))
                     }.padding(.top, -60)
-                    MyDestination(selectedCoordinate: $selectedCoordinate, isShowingMapView: $isShowingMapView, text: $text)
+                    MyDestination(selectedCoordinate: $viewModelSummary.selectedCoordinate, isShowingMapView: $viewModelSummary.isShowingMapView, text: $text)
                     HStack (spacing: 20){
                         //NavigationLink(destination: OnMyBodyView(itemsCount: $onMyBodyItemCount)){
-                        OnMyBodyCard(title: "On My Body", itemCount: $onMyBodyItemCount)
+                        OnMyBodyCard(title: "On My Body", itemCount: $viewModelSummary.onMyBodyItemCount)
                         //}
                         //NavigationLink(destination: Traddy.MyLuggage(itemsCount2: $MyLuggage)){
-                        MyLuggageCard(title: "My Luggage", itemCount2: $MyLuggage)
+                        MyLuggageCard(title: "My Luggage", itemCount2: $viewModelSummary.MyLuggage)
                         //}
                     }
                     Spacer()
@@ -73,37 +64,12 @@ struct MyDestination: View{
                     .frame(width: 350, height: 327)
                     .foregroundColor(Color("Button"))
                     .shadow(radius: 4, x: 0, y: 2)
-                
                 MapView(selectedCoordinate: $selectedCoordinate)
                     .frame(width: 350, height: 327)
                     .cornerRadius(15)
-                //                    .shadow(radius: 5)
                     .onTapGesture {
                         isShowingMapView = true
                     }
-                
-                //                if let coordinate = selectedCoordinate {
-                //                    //Text("Selected Coordinate: \(coordinate.latitude), \(coordinate.longitude)")
-                //                }
-                //                    .padding()
-                //                    .background(Color.white)   
-                
-                //                VStack{
-                //                    ForEach(point, id: \.self){i in
-                //                        HStack (spacing: 10){
-                //                            Circle()
-                //                                .frame(width: 12)
-                //                                .foregroundColor(Color(.white))
-                //                            Text("\(i)")
-                //                                .font(.footnote)
-                //                                .fontWeight(.semibold)
-                //                                .foregroundColor(Color(.white))
-                //                            Spacer()
-                //                        }
-                //                    }
-                //                }.padding(.horizontal, 40)
-                //                .padding(.vertical, 5)
-                
                 ZStack {
                     RoundedRectangle(cornerRadius: 15)
                         .frame(width: 350, height: 40)
@@ -118,7 +84,6 @@ struct MyDestination: View{
                         Spacer()
                     }.padding(.horizontal, 40)
                 }.padding(.top, -163)
-                
                 NavigationLink(destination: MapView(selectedCoordinate: $selectedCoordinate), isActive: $isShowingMapView) {
                     EmptyView()
                 }
@@ -134,7 +99,7 @@ struct OnMyBodyCard: View{
     @Binding var itemCount: Int // Tambahkan itemCount
     
     var body: some View{
-        NavigationLink(destination: OnMyBodyView(itemsCount: $itemCount)){
+        NavigationLink(destination: OnMyBodyView(itemsCountOnMyBody: $itemCount)){
             ZStack{
                 RoundedRectangle(cornerRadius: 15)
                     .frame(width: 165, height: 240)
@@ -185,7 +150,6 @@ struct OnMyBodyCard: View{
                     }.padding(.bottom, 20)
                 }
             }
-            //        })
         }
     }
 }
@@ -195,7 +159,7 @@ struct MyLuggageCard: View{
     @Binding var itemCount2: Int // Tambahkan itemCount
     
     var body: some View{
-        NavigationLink(destination: Traddy.MyLuggage(itemsCount2: $itemCount2)){
+        NavigationLink(destination: Traddy.MyLuggage(itemsCountMyLuggage: $itemCount2)){
             ZStack{
                 RoundedRectangle(cornerRadius: 15)
                     .frame(width: 165, height: 240)

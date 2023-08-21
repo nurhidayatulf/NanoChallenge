@@ -1,5 +1,5 @@
 //
-//  Extensions.swift
+//  UINavContr+Extension.swift
 //  Traddy
 //
 //  Created by Hafidz Ismail Hidayat on 09/06/23.
@@ -8,22 +8,17 @@
 import SwiftUI
 
 extension View {
-    
     func setNavbarColor(color: Color){
-        
     }
     
     func setNavbarTitleColor(color: Color){
-        
     }
 }
 
 //NavigationController Helpers
 extension UINavigationController{
-    
     open override func viewDidLoad() {
         super.viewDidLoad()
-        
         navigationBar.titleTextAttributes = [.foregroundColor : UIColor.black]
 //        UINavigationBar.appearance().shadowImage = UIImage().
 //        UINavigationBar.appearance().s = UIImage()

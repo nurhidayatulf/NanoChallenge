@@ -14,7 +14,6 @@ struct MainView: View {
     @State private var currentPage = 0
     @Binding var searchQuery: String
 
-    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -36,45 +35,24 @@ struct MainView: View {
                         }
                     } else {
                         PagerView(pageCount: cards.count, currentIndex: $currentPage) {
-//                            Spacer()
                             ForEach(cards) { card in
                                 CardView(card: card, cards: $cards, searchQuery: $searchQuery)
                             }
-//                            Spacer()
-
                         }
-
-//                        .padding(.top, 10)
                     }
                     Spacer()
                 }
                 .background(.white)
-
-
-
                 PlusButton(action: {
                     isCreatingCard = true
                 })
                 .sheet(isPresented: $isCreatingCard) {
                     CreateCardView(isCreatingCard: $isCreatingCard, cards: $cards)
                 }
-
             }
             .ignoresSafeArea()
             .navigationBarTitle("My Trip", displayMode: .large)
-//            .toolbarColorScheme(.light, for: .navigationBar)
-//            .toolbarBackground(
-//                            Color.white,
-//                            for: .navigationBar)
-//                        .toolbarBackground(.visible, for: .navigationBar)
-
-//            .background(NavigationConfigurator { nc in
-//                nc.navigationBar.barTintColor = .black
-//                nc.navigationBar.titleTextAttributes = [.foregroundColor : UIColor.white]
-//            })
-
         }
-
     }
 }
 
@@ -112,31 +90,6 @@ struct PagerView<Content: View>: View {
             )
         }
     }
-}
-
-struct WelcomeMapView: UIViewRepresentable {
-    let coordinate: CLLocationCoordinate2D
-    
-    func makeUIView(context: Context) -> MKMapView {
-        MKMapView()
-    }
-    
-    func updateUIView(_ uiView: MKMapView, context: Context) {
-        uiView.removeAnnotations(uiView.annotations)
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = coordinate
-        uiView.addAnnotation(annotation)
-        
-        let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
-        uiView.setRegion(region, animated: true)
-    }
-}
-
-struct Card: Identifiable {
-    let id = UUID()
-    var text: String
-    var location: CLLocationCoordinate2D?
-    var imageName: String?
 }
 
 struct MainView_Previews: PreviewProvider {

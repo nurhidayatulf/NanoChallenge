@@ -29,9 +29,3 @@ struct RoundedButton: View {
 
     }
 }
-
-//struct RoundedButton_Previews: PreviewProvider {
-//    static var previews: some View {
-//        RoundedButton()
-//    }
-//}
